@@ -34,15 +34,9 @@ class User < ActiveRecord::Base
   validates :password, presence: true, length: { minimum: 6 }
   validates :password_confirmation, presence: true
 
-  def create_remember_token
-      self.remember_token = SecureRandom.urlsafe_base64
-    end
-
-    def feed
+  def feed
     Micropost.from_users_followed_by(self)
   end
-
-  private
 
   def following?(other_user)
     relationships.find_by_followed_id(other_user.id)
@@ -55,5 +49,10 @@ class User < ActiveRecord::Base
   def unfollow!(other_user)
     relationships.find_by_followed_id(other_user.id).destroy
   end
-end  
-  
+
+  private
+
+    def create_remember_token
+      self.remember_token = SecureRandom.urlsafe_base64
+    end
+end
